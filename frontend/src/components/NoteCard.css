@@ -1,0 +1,195 @@
+/* ================================
+   NOTE CARD STYLES
+   ================================ */
+
+.note-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.note-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Note Header */
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.note-title {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #333;
+  font-weight: 600;
+  flex: 1;
+  word-break: break-word;
+}
+
+.note-date {
+  color: #999;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  padding-top: 0.25rem;
+}
+
+/* Note Content */
+.note-content {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.note-content p {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+.note-content p.preview {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.note-content p.expanded {
+  max-height: none;
+  overflow: visible;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.expand-btn:hover {
+  color: #764ba2;
+}
+
+/* Summary Section */
+.summary-section {
+  background: #f0f4ff;
+  border-left: 4px solid #667eea;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.summary-section h4 {
+  margin: 0 0 0.5rem 0;
+  color: #667eea;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.summary-text {
+  margin: 0;
+  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border-left: 4px solid #c33;
+}
+
+/* Action Buttons */
+.note-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.summarize-btn,
+.delete-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.summarize-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.summarize-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.summarize-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-btn {
+  background-color: #fee;
+  color: #c33;
+  border: 2px solid #c33;
+}
+
+.delete-btn:hover {
+  background-color: #c33;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(204, 51, 51, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .note-card {
+    padding: 1rem;
+  }
+
+  .note-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .note-title {
+    font-size: 1.2rem;
+  }
+
+  .note-date {
+    font-size: 0.85rem;
+  }
+
+  .note-actions {
+    gap: 0.5rem;
+  }
+
+  .summarize-btn,
+  .delete-btn {
+    min-width: 100px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
