@@ -1,14 +1,5 @@
 /**
- * MERN Notes App - Backend Server
- * 
- * This is the main server file that sets up Express, MongoDB connection,
- * and defines all API routes.
- * 
- * Environment Variables Required:
- * - MONGO_URI: MongoDB connection string
- * - JWT_SECRET: Secret key for JWT tokens
- * - OPENAI_API_KEY: OpenAI API key for summarization
- * - PORT: Server port (default: 5000)
+ * MERN Notes App - Backend Server (Fixed for Render)
  */
 
 const express = require('express');
@@ -20,24 +11,23 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const notesRoutes = require('./routes/notes');
 
-// Initialize Express app
+// Initialize app
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ============================================
-// MIDDLEWARE SETUP
+// MIDDLEWARE
 // ============================================
 
-// Parse JSON request bodies
 app.use(express.json());
 
-// Enable CORS (Cross-Origin Resource Sharing)
-// Allow requests from frontend (adjust origin in production)
+// CORS (safe for dev + prod)
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production'
-      ? process.env.FRONTEND_URL || 'https://your-frontend.com'
-      : 'http://localhost:5173', // Vite default port
+    origin: [
+      'http://localhost:5173', // local frontend
+      process.env.FRONTEND_URL // production frontend
+    ].filter(Boolean),
     credentials: true,
   })
 );
@@ -48,42 +38,45 @@ app.use(
 
 const connectDB = async () => {
   try {
-    // Connect to MongoDB using Mongoose
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    if (!process.env.MONGO_URI) {
+      console.error('❌ MONGO_URI is missing in environment variables');
+      return;
+    }
+
+    await mongoose.connect(process.env.MONGO_URI);
+
     console.log('✅ MongoDB connected successfully');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
-    // Exit process if database connection fails
-    process.exit(1);
+    // ❗ Do NOT exit → prevents 502 crash
   }
 };
 
-// Call database connection function
 connectDB();
 
 // ============================================
-// API ROUTES
+// ROUTES
 // ============================================
 
-// Health check endpoint
+// Root route (helps avoid 502 confusion)
+app.get('/', (req, res) => {
+  res.send('🚀 Notes API is running');
+});
+
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running' });
 });
 
-// Authentication routes
+// API routes
 app.use('/api/auth', authRoutes);
-
-// Notes routes
 app.use('/api/notes', notesRoutes);
 
 // ============================================
 // ERROR HANDLING
 // ============================================
 
-// 404 Not Found handler
+// 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -91,13 +84,12 @@ app.use('*', (req, res) => {
   });
 });
 
-// Global error handler (optional but recommended)
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error('Global error:', err);
+  console.error('🔥 Global error:', err);
   res.status(500).json({
     success: false,
     message: 'Internal server error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
   });
 });
 
@@ -106,19 +98,10 @@ app.use((err, req, res, next) => {
 // ============================================
 
 app.listen(PORT, () => {
-  console.log(`
-╔════════════════════════════════════════╗
-║  📝 MERN Notes App - Backend Server    ║
-║  🚀 Running on http://localhost:${PORT}    ║
-║  🗄️  MongoDB: Connected                ║
-║  🔐 JWT Auth: Enabled                  ║
-║  🤖 OpenAI Integration: Enabled        ║
-╚════════════════════════════════════════╝
-  `);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Handle unhandled promise rejections
+// Prevent crash on async errors
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Rejection:', err);
-  process.exit(1);
 });
